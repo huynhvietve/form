@@ -3,9 +3,8 @@ import { useRef, useState } from "react";
 const BasicForm = () => {
   const emailInputRef = useRef();
   const paswordInputRef = useRef();
-  console.log(emailInputRef);
+
   const [isLogin, setIsLogin] = useState(true);
-  const [isLoading, setIsLoading] = useState(false);
 
   const submitHandler = (event) => {
     event.preventDefault();
@@ -13,36 +12,38 @@ const BasicForm = () => {
     const enteredPasword = paswordInputRef.current.value;
     console.log(enteredEmail, enteredPasword);
 
-    //  setIsLoading(true);
-    //  let url;
-
-    //   if (isLogin) {
-    //     url =
-    //     'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyBZhsabDexE9BhcJbGxnZ4DiRlrCN9xe24';
-    //   } else {
-    //     fetch(
-    //       "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyD8KARKd1cjmqelMN77pAKkp-iNeAsc6rU",
-    //       {
-    //         method: "POST",
-    //         body: JSON.stringify({
-    //           email: enteredEmail,
-    //           password: enteredPasword,
-    //           returnSecureToken: true,
-    //         }),
-    //         headers: {
-    //           "Content-Type": "application/json",
-    //         },
-    //       }
-    //     ).then((res) => {
-    //       if (res.ok) {
-    //       } else {
-    //         return res.json().then((data) => {
-    //           //show an error modal
-    //           console.log(data);
-    //         });
-    //       }
-    //     });
-    //   }
+    fetch(
+      "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyD8KARKd1cjmqelMN77pAKkp-iNeAsc6rU",
+      {
+        method: "POST",
+        body: JSON.stringify({
+          email: enteredEmail,
+          password: enteredPasword,
+          returnSecureToken: true,
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    )
+      .then((res) => {
+        if (res.ok) {
+          return res.json();
+        } else {
+          return res.json().then((data) => {
+            let errorMessage = " Đăng nhập thất bại!";
+            //show an error modal
+            throw new Error(errorMessage);
+            console.log(data);
+          });
+        }
+      })
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((err) => {
+        alert(err.message);
+      });
   };
 
   return (
@@ -68,7 +69,7 @@ const BasicForm = () => {
           />
         </div>
         <div className="form-actions">
-          <button type="button">ĐĂNG NHẬP</button>
+          <button type="submit">ĐĂNG NHẬP</button>
         </div>
       </form>
     </div>
